@@ -8,8 +8,7 @@ var srcPath      = rootPath + "src/";
 var contractPath = rootPath + "contract/";
 var testPath     = rootPath + "test/";
 var solution     = rootPath + "ETransfer.Contracts.sln";
-var srcProjects  = GetFiles(srcPath + "**/*.csproj");
-var contractProjects  = GetFiles(contractPath + "**/*.csproj");
+
 Task("Clean")
     .Description("clean up project cache")
     .Does(() =>
@@ -73,37 +72,6 @@ Task("Test-with-Codecov")
     }
 });
 
-Task("Run-Unit-Tests")
-    .Description("operation test")
-    .IsDependentOn("Build")
-    .Does(() =>
-{
-    var testSetting = new DotNetCoreTestSettings{
-        Configuration = configuration,
-        NoRestore = true,
-        NoBuild = true,
-        ArgumentCustomization = args => {
-            return args.Append("--logger trx");
-        }
-};
-    var testProjects = GetFiles("./test/*.Tests/*.csproj");
-
-
-    foreach(var testProject in testProjects)
-    {
-        DotNetCoreTest(testProject.FullPath, testSetting);
-    }
-});
-Task("Upload-Coverage")
-    .Does(() =>
-{
-    var reports = GetFiles("./test/*.Tests/TestResults/*/coverage.cobertura.xml");
-
-    foreach(var report in reports)
-    {
-        Codecov(report.FullPath,"$CODECOV_TOKEN");
-    }
-});
 Task("Upload-Coverage-Azure")
     .Does(() =>
 {
