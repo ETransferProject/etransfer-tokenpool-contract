@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AElf.Contracts.MultiToken;
-using Google.Protobuf;
 using Shouldly;
 using Xunit;
 
@@ -27,7 +26,6 @@ namespace ETransfer.Contracts.TokenPool
                 Symbol = USDT,
                 Amount = 100_000000,
             });
-
             
             // user approve and transfer
             await User1TokenContractStub.Approve.SendAsync(new ApproveInput
@@ -39,7 +37,9 @@ namespace ETransfer.Contracts.TokenPool
             var transferRes = await User1TokenPoolContractStub.TransferToken.SendAsync(new TransferTokenInput
             {
                 Symbol = USDT,
-                Amount = 100_000000
+                Amount = 100_000000,
+                ToChainId = "ETH",
+                ToAddress = User2.Address.ToBase58()
             });
             
             // verify TokenPoolTransferred
@@ -50,6 +50,8 @@ namespace ETransfer.Contracts.TokenPool
             log.To.ShouldBe(tokenHolderAddress);
             log.Symbol.ShouldBe(USDT);
             log.Amount.ShouldBe(100_000000);
+            log.ToChainId.ShouldBe("ETH");
+            log.ToAddress.ShouldBe(User2.Address.ToBase58());
             
             // verify Transferred
             transferRes.TransactionResult.Logs.Count(log => log.Name == nameof(Transferred)).ShouldBe(1);

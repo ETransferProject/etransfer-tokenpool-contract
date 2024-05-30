@@ -93,6 +93,81 @@ namespace ETransfer.Contracts.TokenPool
                     User1TokenPoolContractStub.SetAdmin.SendAsync(new Address()));
             invalidInput.Message.ShouldContain("Invalid address");
         }
+        
+        [Fact]
+        public async Task AddReleaseController()
+        {
+            await InitTest();
+
+            var releaseControllers = await AdminTokenPoolContractStub.GetReleaseControllers.CallAsync(new Empty());
+            releaseControllers.Addresses.Count.ShouldBe(0);
+            
+            var res = await AdminTokenPoolContractStub.AddReleaseController.SendAsync(new ControllerInput
+            {
+                Address = User1.Address
+            });
+            releaseControllers = await AdminTokenPoolContractStub.GetReleaseControllers.CallAsync(new Empty());
+            releaseControllers.Addresses.Count.ShouldBe(1);
+
+            res.TransactionResult.Logs.Count(log => log.Name == nameof(ReleaseControllerAdded)).ShouldBe(1);
+            var releaseControllerAdded = ReleaseControllerAdded.Parser.ParseFrom(res.TransactionResult.Logs
+                .First(log => log.Name == nameof(ReleaseControllerAdded)).NonIndexed);
+            releaseControllerAdded.Address.ShouldBe(User1.Address);
+            
+            res = await AdminTokenPoolContractStub.AddReleaseController.SendAsync(new ControllerInput
+            {
+                Address = User1.Address
+            });
+            releaseControllers = await AdminTokenPoolContractStub.GetReleaseControllers.CallAsync(new Empty());
+            releaseControllers.Addresses.Count.ShouldBe(1);
+            res.TransactionResult.Logs.Count(log => log.Name == nameof(ReleaseControllerAdded)).ShouldBe(0);
+            
+            // failed 
+            var invalidInput = await Assert.ThrowsAnyAsync<Exception>(() =>
+                AdminTokenPoolContractStub.AddReleaseController.SendAsync(new ControllerInput()));
+            invalidInput.Message.ShouldContain("Invalid input");
+
+            await AdminTokenPoolContractStub.SetAdmin.SendAsync(User2.Address);
+            var noPermission = await Assert.ThrowsAnyAsync<Exception>(() =>
+                AdminTokenPoolContractStub.AddReleaseController.SendAsync(new ControllerInput()));
+            noPermission.Message.ShouldContain("No permission");
+        }
+        
+        [Fact]
+        public async Task RemoveReleaseController()
+        {
+            await InitTest();
+
+            var releaseControllers = await AdminTokenPoolContractStub.GetReleaseControllers.CallAsync(new Empty());
+            releaseControllers.Addresses.Count.ShouldBe(0);
+            
+            await AdminTokenPoolContractStub.AddReleaseController.SendAsync(new ControllerInput
+            {
+                Address = User1.Address
+            });
+            releaseControllers = await AdminTokenPoolContractStub.GetReleaseControllers.CallAsync(new Empty());
+            releaseControllers.Addresses.Count.ShouldBe(1);
+
+            var res = await AdminTokenPoolContractStub.RemoveReleaseController.SendAsync(new ControllerInput
+            {
+                Address = User1.Address
+            });
+            releaseControllers = await AdminTokenPoolContractStub.GetReleaseControllers.CallAsync(new Empty());
+            releaseControllers.Addresses.Count.ShouldBe(0);
+
+            res.TransactionResult.Logs.Count(log => log.Name == nameof(ReleaseControllerRemoved)).ShouldBe(1);
+            var releaseControllerRemoved = ReleaseControllerRemoved.Parser.ParseFrom(res.TransactionResult.Logs
+                .First(log => log.Name == nameof(ReleaseControllerRemoved)).NonIndexed);
+            releaseControllerRemoved.Address.ShouldBe(User1.Address);
+            
+            res = await AdminTokenPoolContractStub.RemoveReleaseController.SendAsync(new ControllerInput
+            {
+                Address = User1.Address
+            });
+            releaseControllers = await AdminTokenPoolContractStub.GetReleaseControllers.CallAsync(new Empty());
+            releaseControllers.Addresses.Count.ShouldBe(0);
+            res.TransactionResult.Logs.Count(log => log.Name == nameof(ReleaseControllerRemoved)).ShouldBe(0);
+        }
 
         [Fact]
         public async Task AddTokenPool()

@@ -1,3 +1,4 @@
+using System.Linq;
 using AElf;
 using AElf.CSharp.Core;
 using AElf.Sdk.CSharp;
@@ -88,6 +89,51 @@ namespace ETransfer.Contracts.TokenPool
 
             State.Admin.Value = input;
 
+            return new Empty();
+        }
+        
+        public override Empty AddReleaseController(ControllerInput input)
+        {
+            AssertContractInitialize();
+            AssertAdmin();
+            Assert(input != null && input.Address != null, "Invalid input");
+            
+            State.ReleaseControllers.Value ??= new ControllerList();
+            var controller = State.ReleaseControllers.Value.Controllers.FirstOrDefault(c => c == input!.Address);
+            if (controller != null)
+            {
+                return new Empty();
+            }
+        
+            State.ReleaseControllers.Value.Controllers.Add(input!.Address);
+            Context.Fire(new ReleaseControllerAdded
+            {
+                Address = input.Address
+            });
+        
+            return new Empty();
+        }
+        
+        public override Empty RemoveReleaseController(ControllerInput input)
+        {
+            AssertContractInitialize();
+            AssertAdmin();
+            Assert(input != null && input.Address != null, "Invalid input");
+        
+            State.ReleaseControllers.Value ??= new ControllerList();
+            var controller = State.ReleaseControllers.Value.Controllers.FirstOrDefault(c => c == input!.Address);
+            if (controller == null)
+            {
+                return new Empty();
+            }
+        
+            State.ReleaseControllers.Value.Controllers.Remove(controller);
+        
+            Context.Fire(new ReleaseControllerRemoved
+            {
+                Address = input!.Address
+            });
+        
             return new Empty();
         }
 
