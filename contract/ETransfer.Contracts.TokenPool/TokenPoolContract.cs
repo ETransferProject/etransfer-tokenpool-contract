@@ -41,7 +41,8 @@ namespace ETransfer.Contracts.TokenPool
                 Symbol = input.Symbol,
                 Amount = input.Amount,
                 ToChainId = input.ToChainId,
-                ToAddress = input.ToAddress
+                ToAddress = input.ToAddress,
+                MaxEstimateFee = input.MaxEstimateFee
             });
             
             return new Empty();

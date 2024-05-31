@@ -59,6 +59,7 @@ message TransferTokenInput {
     int64 amount = 2;
     string to_chain_id = 3;
     string to_address = 4;
+    int64 max_estimate_fee = 5;
 }
 
 message ReleaseTokenInput {
@@ -126,6 +127,7 @@ message TokenPoolTransferred {
     aelf.Address to = 4;
     string to_chain_id = 5;
     string to_address = 6;
+    int64 max_estimate_fee = 7;
 }
 
 message TokenPoolReleased {

@@ -39,7 +39,8 @@ namespace ETransfer.Contracts.TokenPool
                 Symbol = USDT,
                 Amount = 100_000000,
                 ToChainId = "ETH",
-                ToAddress = User2.Address.ToBase58()
+                ToAddress = User2.Address.ToBase58(),
+                MaxEstimateFee = 1
             });
             
             // verify TokenPoolTransferred
@@ -52,14 +53,14 @@ namespace ETransfer.Contracts.TokenPool
             log.Amount.ShouldBe(100_000000);
             log.ToChainId.ShouldBe("ETH");
             log.ToAddress.ShouldBe(User2.Address.ToBase58());
+            log.MaxEstimateFee.ShouldBe(1);
             
             // verify Transferred
             transferRes.TransactionResult.Logs.Count(log => log.Name == nameof(Transferred)).ShouldBe(1);
             var transferred = Transferred.Parser.ParseFrom(transferRes.TransactionResult.Logs
                 .First(log => log.Name == nameof(Transferred)).NonIndexed);
             transferred.Amount.ShouldBe(100_000000);
-            
-            
+
             // verify fund pool balance
             var balance = await AdminTokenContractStub.GetBalance.CallAsync(new GetBalanceInput
             {
