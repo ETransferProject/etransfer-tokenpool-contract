@@ -67,6 +67,7 @@ message ReleaseTokenInput {
     int64 amount = 2;
     aelf.Address from = 3;
     aelf.Address to = 4;
+    string memo = 5;
 }
 
 message ControllerInput {
@@ -136,6 +137,7 @@ message TokenPoolReleased {
     int64 amount = 2;
     aelf.Address from = 3;
     aelf.Address to = 4;
+    string memo = 5;
 }
 
 message ReleaseControllerAdded {

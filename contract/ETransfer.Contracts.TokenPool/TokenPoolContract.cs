@@ -69,7 +69,8 @@ namespace ETransfer.Contracts.TokenPool
             {
                 To = input.To,
                 Symbol = input.Symbol,
-                Amount = input.Amount
+                Amount = input.Amount,
+                Memo = input.Memo
             });
         
             Context.Fire(new TokenPoolReleased
@@ -77,7 +78,8 @@ namespace ETransfer.Contracts.TokenPool
                 From = tokenHolder.Address,
                 To = input.To,
                 Symbol = input.Symbol,
-                Amount = input.Amount 
+                Amount = input.Amount,
+                Memo = input.Memo
             });
             
             return new Empty();

@@ -56,17 +56,19 @@ namespace ETransfer.Contracts.TokenPool
             {
                 Symbol = USDT,
                 Amount = 100_000000,
-                To = User1.Address
+                To = User1.Address,
+                Memo = "AA"
             });
 
             // verify TokenPoolReleased
             res.TransactionResult.Logs.Count(log => log.Name == nameof(TokenPoolReleased)).ShouldBe(1);
-            var log = TokenPoolTransferred.Parser.ParseFrom(res.TransactionResult.Logs
+            var log = TokenPoolReleased.Parser.ParseFrom(res.TransactionResult.Logs
                 .First(log => log.Name == nameof(TokenPoolReleased)).NonIndexed);
             log.From.ShouldBe(tokenHolderAddress);
             log.To.ShouldBe(User1.Address);
             log.Symbol.ShouldBe(USDT);
             log.Amount.ShouldBe(100_000000);
+            log.Memo.ShouldBe("AA");
             
             // verify Transferred
             res.TransactionResult.Logs.Count(log => log.Name == nameof(Transferred)).ShouldBe(1);
