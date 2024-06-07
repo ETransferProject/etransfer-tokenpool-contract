@@ -56,9 +56,13 @@
     <ContractStub Include="..\..\protobuf\token_pool_contract.proto">
       <Link>Protobuf\Proto\token_pool_contract.proto</Link>
     </ContractStub>
+    <ContractStub Include="..\..\protobuf\test_swap_contract.proto">
+      <Link>Protobuf\Proto\test_swap_contract.proto</Link>
+    </ContractStub>
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ETransfer.Contracts.TestSwapContracts\ETransfer.Contracts.TestSwapContracts.csproj" />
     <ProjectReference Include="..\..\contract\ETransfer.Contracts.TokenPool\ETransfer.Contracts.TokenPool.csproj" />
     <ProjectReference Include="..\..\src\AElf.Boilerplate.TestBase\AElf.Boilerplate.TestBase.csproj" />
   </ItemGroup>

@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.IO;
 using AElf.Boilerplate.TestBase;
+using AElf.Boilerplate.TestBase.SmartContractNameProviders;
 using AElf.ContractTestBase;
 using AElf.Kernel.SmartContract.Application;
+using ETransfer.Contracts.TokenPool.ContractInitializationProvider;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp;
 using Volo.Abp.Modularity;
@@ -16,6 +18,7 @@ namespace ETransfer.Contracts.TokenPool
         {
             context.Services.AddSingleton<IContractInitializationProvider, TokenPoolContractInitializationProvider>();
             // Configure<ContractOptions>(o => o.ContractDeploymentAuthorityRequired = false);
+            context.Services.AddSingleton<IContractInitializationProvider, TestSwapContractInitializationProvider>();
 
         }
 
@@ -28,6 +31,10 @@ namespace ETransfer.Contracts.TokenPool
                 {
                     new TokenPoolContractInitializationProvider().ContractCodeName,
                     File.ReadAllBytes(contractDllLocation)
+                },
+                {
+                    new TestSwapContractInitializationProvider().ContractCodeName,
+                    File.ReadAllBytes(typeof(TestSwapContracts.TestSwapContracts).Assembly.Location)
                 }
             };
             contractCodeProvider.Codes = contractCodes;

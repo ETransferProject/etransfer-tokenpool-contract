@@ -22,5 +22,10 @@ namespace ETransfer.Contracts.TokenPool
         
         // Serial number used to generate the virtual hash
         public MappedState<string, int> VirtualHashIndex { get; set; }
+
+        /// <summary>
+        /// Fee rate -> swap contract address
+        /// </summary>
+        public MappedState<long, Address> SwapContractMap { get; set; }
     }
 }
