@@ -190,6 +190,7 @@ message TokenSwapped{
     string channel = 6;
     SwapPath swap_path = 7;
     aelf.Address from = 8;
+    int64 fee_rate = 9;
 }
 
 message SwapPath {

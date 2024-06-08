@@ -73,7 +73,8 @@ public partial class TokenPoolContract
             SwapPath = new SwapPath
             {
                 Path = { input.Path }
-            }
+            },
+            FeeRate = input.FeeRate
         });
         return new Empty();
     }
