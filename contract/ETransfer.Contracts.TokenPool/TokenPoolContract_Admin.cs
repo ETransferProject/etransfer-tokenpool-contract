@@ -23,7 +23,7 @@ namespace ETransfer.Contracts.TokenPool
             Assert(input != null, "Invalid input");
             if (input.Admin != null)
             {
-                Assert(!input.Admin.Value.IsNullOrEmpty(), "Invalid admin address");
+                Assert(IsAddressValid(input.Admin), "Invalid admin address");
             }
 
             State.TokenContract.Value =
@@ -85,7 +85,7 @@ namespace ETransfer.Contracts.TokenPool
         {
             AssertContractInitialize();
             AssertAdmin();
-            Assert(!input.Value.IsNullOrEmpty(), "Invalid address");
+            Assert(IsAddressValid(input), "Invalid address");
 
             State.Admin.Value = input;
 
@@ -96,7 +96,7 @@ namespace ETransfer.Contracts.TokenPool
         {
             AssertContractInitialize();
             AssertAdmin();
-            Assert(input != null && input.Address != null, "Invalid input");
+            Assert(IsAddressValid(input.Address), "Invalid input");
             
             State.ReleaseControllers.Value ??= new ControllerList();
             var controller = State.ReleaseControllers.Value.Controllers.FirstOrDefault(c => c == input!.Address);
@@ -118,7 +118,7 @@ namespace ETransfer.Contracts.TokenPool
         {
             AssertContractInitialize();
             AssertAdmin();
-            Assert(input != null && input.Address != null, "Invalid input");
+            Assert(IsAddressValid(input.Address), "Invalid input");
         
             State.ReleaseControllers.Value ??= new ControllerList();
             var controller = State.ReleaseControllers.Value.Controllers.FirstOrDefault(c => c == input!.Address);

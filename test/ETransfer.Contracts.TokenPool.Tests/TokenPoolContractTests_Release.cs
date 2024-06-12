@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AElf.Contracts.MultiToken;
+using AElf.Types;
 using Google.Protobuf.WellKnownTypes;
 using Shouldly;
 using Xunit;
@@ -50,6 +51,15 @@ namespace ETransfer.Contracts.TokenPool
             });
             var releaseControllers = await AdminTokenPoolContractStub.GetReleaseControllers.CallAsync(new Empty());
             releaseControllers.Addresses.Count.ShouldBe(1);
+            
+            var invalidInput = await Assert.ThrowsAnyAsync<Exception>(() =>
+                User1TokenPoolContractStub.ReleaseToken.SendAsync(new ReleaseTokenInput
+                {
+                    Symbol = USDT,
+                    Amount = 100_000000,
+                    To = new Address()
+                }));
+            invalidInput.Message.ShouldContain("Invalid address");
 
             // release
             var res = await User1TokenPoolContractStub.ReleaseToken.SendAsync(new ReleaseTokenInput()

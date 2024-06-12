@@ -1,4 +1,3 @@
-using AElf;
 using AElf.Contracts.MultiToken;
 using AElf.Sdk.CSharp;
 using Google.Protobuf.WellKnownTypes;
@@ -56,7 +55,7 @@ namespace ETransfer.Contracts.TokenPool
             Assert(input != null, "Invalid input.");
             Assert(input.Symbol?.Length > 0, "Invalid symbol.");
             Assert(input.Amount > 0, "Invalid amount");
-            Assert(input.To != null && !input.To.Value.IsNullOrEmpty(), "Invalid address");
+            Assert(IsAddressValid(input.To), "Invalid address");
             
             var tokenHolder = GetTokenHolder(input.Symbol, input.From);
             if (tokenHolder == null)
