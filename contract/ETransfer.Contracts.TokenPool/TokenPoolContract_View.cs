@@ -10,6 +10,14 @@ namespace ETransfer.Contracts.TokenPool
         {
             return State.Admin.Value;
         }
+        
+        public override ControllerOutput GetReleaseControllers(Empty input)
+        {
+            return new ControllerOutput
+            {
+                Addresses = { (State.ReleaseControllers.Value ?? new ControllerList()).Controllers }
+            };
+        }
 
         public override PoolInfo GetPoolInfo(GetPoolInfoInput input)
         {

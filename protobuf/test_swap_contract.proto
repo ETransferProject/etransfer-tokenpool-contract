@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+import "aelf/core.proto";
+import "aelf/options.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+import "acs12.proto";
+
+option csharp_namespace = "ETransfer.Contracts.TestSwapContracts";
+
+service TestSwapContracts {
+  option (aelf.csharp_state) = "ETransfer.Contracts.TestSwapContracts.TestSwapContractState";
+  option (aelf.base) = "acs12.proto";
+  
+  rpc SwapExactTokensForTokens (SwapExactTokensForTokensInput) returns (SwapOutput) {
+  }
+  rpc GetAmountsOut (GetAmountsOutInput) returns (GetAmountsOutOutput) {
+    option (aelf.is_view) = true;
+  }
+}
+
+message SwapExactTokensForTokensInput {
+  int64 amount_in = 1;
+  int64 amount_out_min = 2;
+  repeated string path = 3;
+  aelf.Address to = 4;
+  google.protobuf.Timestamp deadline = 5;
+  string channel = 6;
+}
+
+message GetAmountsOutInput {
+  int64 amount_in= 1;
+  repeated string path = 2;
+}
+
+message SwapOutput {
+  repeated int64 amount = 1;
+}
+
+message GetAmountsOutOutput{
+  repeated int64 amount = 1;
+}
+
+message Swapped {
+  option (aelf.is_event) = true;
+  int64 amounts = 1;
+}

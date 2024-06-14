@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using AElf.Contracts.MultiToken;
 using AElf.Types;
 
@@ -26,6 +25,12 @@ namespace ETransfer.Contracts.TokenPool
             Assert(State.Admin.Value == Context.Sender, "No permission.");
         }
 
+        private void AssertReleaseController()
+        {
+            Assert((State.ReleaseControllers.Value ?? new ControllerList()).Controllers.Contains(Context.Sender),
+                "No permission.");
+        }
+
         private TokenInfo GetTokenInfo(string symbol)
         {
             return State.TokenContract.GetTokenInfo.Call(new GetTokenInfoInput
@@ -46,6 +51,16 @@ namespace ETransfer.Contracts.TokenPool
             foreach (var tokenHolder in State.TokenPool[symbol].TokenHolders)
             {
                 if (tokenHolder.VirtualHash == virtualHash) return tokenHolder;
+            }
+            return null;
+        }
+        
+        private TokenHolder GetTokenHolder(string symbol, Address address)
+        {
+            AssertTokenSupport(symbol);
+            foreach (var tokenHolder in State.TokenPool[symbol].TokenHolders)
+            {
+                if (tokenHolder.Address == address) return tokenHolder;
             }
             return null;
         }

@@ -12,6 +12,8 @@ namespace ETransfer.Contracts.TokenPool
         // Contract Administrator Address
         public SingletonState<Address> Admin { get; set; }
         
+        public SingletonState<ControllerList> ReleaseControllers { get; set; }
+        
         // List of supported tokens
         public SingletonState<TokenSymbolList> TokenSymbolList { get; set; }
         
@@ -20,5 +22,10 @@ namespace ETransfer.Contracts.TokenPool
         
         // Serial number used to generate the virtual hash
         public MappedState<string, int> VirtualHashIndex { get; set; }
+
+        /// <summary>
+        /// Fee rate -> swap contract address
+        /// </summary>
+        public MappedState<long, Address> SwapContractMap { get; set; }
     }
 }

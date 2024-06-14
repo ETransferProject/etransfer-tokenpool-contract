@@ -1,3 +1,4 @@
+using System.Linq;
 using AElf;
 using AElf.CSharp.Core;
 using AElf.Sdk.CSharp;
@@ -22,7 +23,7 @@ namespace ETransfer.Contracts.TokenPool
             Assert(input != null, "Invalid input");
             if (input.Admin != null)
             {
-                Assert(!input.Admin.Value.IsNullOrEmpty(), "Invalid admin address");
+                Assert(IsAddressValid(input.Admin), "Invalid admin address");
             }
 
             State.TokenContract.Value =
@@ -84,10 +85,55 @@ namespace ETransfer.Contracts.TokenPool
         {
             AssertContractInitialize();
             AssertAdmin();
-            Assert(!input.Value.IsNullOrEmpty(), "Invalid address");
+            Assert(IsAddressValid(input), "Invalid address");
 
             State.Admin.Value = input;
 
+            return new Empty();
+        }
+        
+        public override Empty AddReleaseController(ControllerInput input)
+        {
+            AssertContractInitialize();
+            AssertAdmin();
+            Assert(IsAddressValid(input.Address), "Invalid input");
+            
+            State.ReleaseControllers.Value ??= new ControllerList();
+            var controller = State.ReleaseControllers.Value.Controllers.FirstOrDefault(c => c == input!.Address);
+            if (controller != null)
+            {
+                return new Empty();
+            }
+        
+            State.ReleaseControllers.Value.Controllers.Add(input!.Address);
+            Context.Fire(new ReleaseControllerAdded
+            {
+                Address = input.Address
+            });
+        
+            return new Empty();
+        }
+        
+        public override Empty RemoveReleaseController(ControllerInput input)
+        {
+            AssertContractInitialize();
+            AssertAdmin();
+            Assert(IsAddressValid(input.Address), "Invalid input");
+        
+            State.ReleaseControllers.Value ??= new ControllerList();
+            var controller = State.ReleaseControllers.Value.Controllers.FirstOrDefault(c => c == input!.Address);
+            if (controller == null)
+            {
+                return new Empty();
+            }
+        
+            State.ReleaseControllers.Value.Controllers.Remove(controller);
+        
+            Context.Fire(new ReleaseControllerRemoved
+            {
+                Address = input!.Address
+            });
+        
             return new Empty();
         }
 

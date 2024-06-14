@@ -1,5 +1,6 @@
 using AElf.Contracts.MultiToken;
 using AElf.Standards.ACS0;
+using Awaken.Contracts.Swap;
 
 namespace ETransfer.Contracts.TokenPool
 {
@@ -9,6 +10,6 @@ namespace ETransfer.Contracts.TokenPool
         
         internal ACS0Container.ACS0ReferenceState GenesisContract { get; set; }
         internal TokenContractContainer.TokenContractReferenceState TokenContract { get; set; }
-
+        internal AwakenSwapContractContainer.AwakenSwapContractReferenceState SwapContract { get; set; }
     }
 }
