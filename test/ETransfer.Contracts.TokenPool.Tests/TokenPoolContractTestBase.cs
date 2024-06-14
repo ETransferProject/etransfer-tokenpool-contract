@@ -16,6 +16,9 @@ namespace ETransfer.Contracts.TokenPool
         protected const int MinersCount = 1;
         
         internal Address TokenPoolContractAddress => GetAddress(TokenPoolContractAddressNameProvider.StringName);
+        
+        internal Address TestSwapContractAddress => GetAddress(TestSwapContractAddressNameProvider.StringName);
+
         internal Account Admin => Accounts[0];
         internal Account User1 => Accounts[1];
         internal Account User2 => Accounts[2];

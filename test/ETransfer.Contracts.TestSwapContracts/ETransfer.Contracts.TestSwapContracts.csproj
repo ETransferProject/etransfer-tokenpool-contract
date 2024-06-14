@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <PackageId>ETransfer.Contracts.TestSwapContracts</PackageId>
+        <RootNamespace>ETransfer.Contracts.TestSwapContracts</RootNamespace>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+    <ItemGroup>
+        <ContractReference Include="..\..\protobuf\acs12.proto">
+            <Link>Protobuf\Proto\reference\acs12.proto</Link>
+        </ContractReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ContractCode Include="..\..\protobuf\test_swap_contract.proto">
+            <Link>Protobuf\Proto\test_swap_contract.proto</Link>
+        </ContractCode>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AElf.Sdk.CSharp" Version="1.6.0" />
+    </ItemGroup>
+</Project>

@@ -38,7 +38,47 @@ namespace ETransfer.Contracts.TokenPool
                 From = Context.Sender,
                 To = toAddress,
                 Symbol = input.Symbol,
-                Amount = input.Amount 
+                Amount = input.Amount,
+                ToChainId = input.ToChainId,
+                ToAddress = input.ToAddress,
+                MaxEstimateFee = input.MaxEstimateFee
+            });
+            
+            return new Empty();
+        }
+        
+        public override Empty ReleaseToken(ReleaseTokenInput input)
+        {
+            AssertContractInitialize();
+            AssertReleaseController();
+            
+            Assert(input != null, "Invalid input.");
+            Assert(input.Symbol?.Length > 0, "Invalid symbol.");
+            Assert(input.Amount > 0, "Invalid amount");
+            Assert(IsAddressValid(input.To), "Invalid address");
+            
+            var tokenHolder = GetTokenHolder(input.Symbol, input.From);
+            if (tokenHolder == null)
+            {
+                var index = Context.TransactionId.ToInt64() % State.TokenPool[input.Symbol].TokenHolders.Count;
+                tokenHolder = State.TokenPool[input.Symbol].TokenHolders[(int)index];
+            }
+
+            State.TokenContract.Transfer.VirtualSend(tokenHolder.VirtualHash, new TransferInput
+            {
+                To = input.To,
+                Symbol = input.Symbol,
+                Amount = input.Amount,
+                Memo = input.Memo
+            });
+        
+            Context.Fire(new TokenPoolReleased
+            {
+                From = tokenHolder.Address,
+                To = input.To,
+                Symbol = input.Symbol,
+                Amount = input.Amount,
+                Memo = input.Memo
             });
             
             return new Empty();
