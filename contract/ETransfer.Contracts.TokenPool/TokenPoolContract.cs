@@ -20,6 +20,7 @@ namespace ETransfer.Contracts.TokenPool
             Assert(input.Amount > 0, "Invalid amount");
 
             AssertTokenSupport(input.Symbol);
+            AssertMemo(input.Memo);
             
             // balance
             var index = Context.TransactionId.ToInt64() % State.TokenPool[input.Symbol].TokenHolders.Count;
@@ -30,7 +31,8 @@ namespace ETransfer.Contracts.TokenPool
                 From = Context.Sender,
                 To = toAddress,
                 Symbol = input.Symbol,
-                Amount = input.Amount
+                Amount = input.Amount,
+                Memo = input.Memo
             });
         
             Context.Fire(new TokenPoolTransferred
@@ -41,7 +43,8 @@ namespace ETransfer.Contracts.TokenPool
                 Amount = input.Amount,
                 ToChainId = input.ToChainId,
                 ToAddress = input.ToAddress,
-                MaxEstimateFee = input.MaxEstimateFee
+                MaxEstimateFee = input.MaxEstimateFee,
+                Memo = input.Memo
             });
             
             return new Empty();
@@ -56,6 +59,7 @@ namespace ETransfer.Contracts.TokenPool
             Assert(input.Symbol?.Length > 0, "Invalid symbol.");
             Assert(input.Amount > 0, "Invalid amount");
             Assert(IsAddressValid(input.To), "Invalid address");
+            AssertMemo(input.Memo);
             
             var tokenHolder = GetTokenHolder(input.Symbol, input.From);
             if (tokenHolder == null)
