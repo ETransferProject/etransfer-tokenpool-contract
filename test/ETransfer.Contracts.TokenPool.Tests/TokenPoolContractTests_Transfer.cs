@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AElf.Contracts.MultiToken;
@@ -34,6 +35,16 @@ namespace ETransfer.Contracts.TokenPool
                 Symbol = USDT,
                 Amount = 100_000000
             });
+            
+            var invalidMemo = await Assert.ThrowsAnyAsync<Exception>(() =>
+                User1TokenPoolContractStub.TransferToken.SendAsync(new TransferTokenInput
+                {
+                    Symbol = USDT,
+                    Amount = 100_000000,
+                    Memo = "!123"
+                }));
+            invalidMemo.Message.ShouldContain("Invalid Memo");
+            
             var transferRes = await User1TokenPoolContractStub.TransferToken.SendAsync(new TransferTokenInput
             {
                 Symbol = USDT,
