@@ -45,6 +45,19 @@ namespace ETransfer.Contracts.TokenPool
             Assert(State.TokenPool[symbol]?.TokenHolders?.Count > 0, "Empty symbol holder");
         }
 
+        private void AssertMemo(string memo)
+        {
+            if (string.IsNullOrEmpty(memo)) return;
+            var isValid = true;
+            foreach (char c in memo)
+            {
+                if ((c >= '0' && c <='9') || (c >= 'a' && c <='z') || (c >= 'A' && c <='Z')) continue;
+                isValid = false;
+                break;
+            }
+            Assert(isValid, "Invalid Memo.");
+        }
+
         private TokenHolder GetTokenHolder(string symbol, Hash virtualHash)
         {
             AssertTokenSupport(symbol);

@@ -144,13 +144,15 @@ namespace ETransfer.Contracts.TokenPool
 
             var tokenHolder = GetTokenHolder(input.Symbol, input.VirtualHash);
             Assert(tokenHolder != null, "Token holder not found");
-
+            AssertMemo(input.Memo);
+            
             Context.SendVirtualInline(input.VirtualHash, State.TokenContract.Value,
                 nameof(State.TokenContract.Transfer), new AElf.Contracts.MultiToken.TransferInput
                 {
                     To = Context.Sender,
                     Symbol = input.Symbol,
-                    Amount = input.Amount
+                    Amount = input.Amount,
+                    Memo = input.Memo
                 });
 
             return new Empty();
